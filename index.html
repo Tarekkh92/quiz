@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz Application</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+#quizContainer {
+  margin-top: 20px;
+}
+
+#questionContainer {
+  margin-bottom: 10px;
+}
+
+#choices {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+#submitBtn {
+  padding: 5px 10px;
+}
+
+#resultContainer {
+  margin-top: 20px;
+}
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0; /* Background color for the footer */
+    padding: 20px; /* Adjust as needed */
+}
+
+.footer-logo {
+    width: 50px; /* Adjust the size of the logo */
+    margin-right: 10px; /* Adjust spacing between logo and text */
+}
+
+/* Add lighting effects */
+.footer-content {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adjust shadow properties as needed */
+    border-radius: 10px; /* Adjust border radius for rounded corners */
+    /* background-color: black; */
+}
+
+
+  </style>
+</head>
+<body>
+  <h1>Quiz Application</h1>
+  <div id="quizContainer">
+    <div id="questionContainer">
+      <p id="question"></p>
+      <ul id="choices"></ul>
+    </div>
+    <button id="submitBtn">Submit</button>
+  </div>
+  <div id="resultContainer"></div>
+  <footer>
+    <div class="footer-content">
+        
+        <p>Powered by <a href="https://www.fardos.dev">Fardos.dev</a></p>
+    </div>
+</footer>
+
+
+
+
+<script>
+    // Define quiz questions
+const questions = [
+  {
+    question: "What is the capital of France?",
+    choices: [  "London", "Paris","Berlin", "Rome"],
+    correctAnswer: 1
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    choices: [  "Jupiter", "Saturn", "Venus","Mars"],
+    correctAnswer: 3
+  },
+  {
+    question: "Who painted the Mona Lisa?",
+    choices: ["Leonardo da Vinci", "Pablo Picasso", "Vincent van Gogh", "Claude Monet"],
+    correctAnswer: 0
+  }
+];
+
+// Get necessary elements
+const questionElement = document.getElementById("question");
+const choicesElement = document.getElementById("choices");
+const submitBtn = document.getElementById("submitBtn");
+const resultContainer = document.getElementById("resultContainer");
+
+let currentQuestion = 0;
+let score = 0;
+
+// Load the first question
+function loadQuestion() {
+  const question = questions[currentQuestion];
+  questionElement.textContent = question.question;
+
+  choicesElement.innerHTML = "";
+
+  for (let i = 0; i < question.choices.length; i++) {
+    const li = document.createElement("li");
+    li.textContent = question.choices[i];
+    li.onclick = checkAnswer;
+    choicesElement.appendChild(li);
+  }
+}
+
+// Check the selected answer
+function checkAnswer() {
+  const question = questions[currentQuestion];
+  const selectedChoice = event.target;
+  const selectedAnswer = Array.from(choicesElement.children).indexOf(selectedChoice);
+
+  if (selectedAnswer === question.correctAnswer) {
+    selectedChoice.classList.add("correct");
+    score++;
+  } else {
+    selectedChoice.classList.add("incorrect");
+  }
+
+  disableChoices();
+  showNextQuestion();
+}
+
+// Disable the answer choices
+function disableChoices() {
+  const choices = choicesElement.children;
+
+  for (let i = 0; i < choices.length; i++) {
+    choices[i].onclick = null;
+    choices[i].classList.add("disabled");
+  }
+}
+
+// Show the next question or the final result
+function showNextQuestion() {
+  currentQuestion++;
+
+  if (currentQuestion < questions.length) {
+    submitBtn.disabled = true;
+    setTimeout(() => {
+      loadQuestion();
+      submitBtn.disabled = false;
+    }, 1000);
+  } else {
+    showResult();
+  }
+}
+
+// Show the quiz result
+function showResult() {
+  resultContainer.innerHTML = `
+    <h2>Quiz Result</h2>
+    <p>You scored ${score} out of ${questions.length}.</p>
+  `;
+}
+
+// Start the quiz
+loadQuestion();
+
+</script>
+</body>
+</html>
